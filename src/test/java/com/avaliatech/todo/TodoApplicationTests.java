@@ -97,6 +97,31 @@ class TodoApplicationTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id").value(saved.getId()))
 				.andExpect(jsonPath("$.title").value("New title"))
+				.andExpect(jsonPath("$.description").value("New description"))
+				.andExpect(jsonPath("$.completed").value(true));
+	}
+
+	@Test
+	void shouldPartiallyUpdateTodoWithPut() throws Exception {
+		Todo todo = new Todo();
+		todo.setTitle("Original title");
+		todo.setDescription("Original description");
+		todo.setCompleted(false);
+		Todo saved = todoRepository.save(todo);
+
+		String request = """
+				{
+				  "completed": true
+				}
+				""";
+
+		mockMvc.perform(put("/api/v1/todos/{id}", saved.getId())
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(request))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value(saved.getId()))
+				.andExpect(jsonPath("$.title").value("Original title"))
+				.andExpect(jsonPath("$.description").value("Original description"))
 				.andExpect(jsonPath("$.completed").value(true));
 	}
 

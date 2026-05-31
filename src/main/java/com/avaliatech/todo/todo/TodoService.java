@@ -22,19 +22,25 @@ public class TodoService {
         return TodoResponse.from(getTodoOrThrow(id));
     }
 
-    public TodoResponse create(TodoRequest request) {
+    public TodoResponse create(CreateTodoRequest request) {
         Todo todo = new Todo();
         todo.setTitle(request.title());
         todo.setDescription(request.description());
-        todo.setCompleted(request.completed());
+        todo.setCompleted(Boolean.TRUE.equals(request.completed()));
         return TodoResponse.from(todoRepository.save(todo));
     }
 
-    public TodoResponse update(Long id, TodoRequest request) {
+    public TodoResponse update(Long id, UpdateTodoRequest request) {
         Todo todo = getTodoOrThrow(id);
-        todo.setTitle(request.title());
-        todo.setDescription(request.description());
-        todo.setCompleted(request.completed());
+        if (request.title() != null) {
+            todo.setTitle(request.title());
+        }
+        if (request.description() != null) {
+            todo.setDescription(request.description());
+        }
+        if (request.completed() != null) {
+            todo.setCompleted(request.completed());
+        }
         return TodoResponse.from(todoRepository.save(todo));
     }
 

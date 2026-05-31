@@ -1,6 +1,9 @@
 package com.avaliatech.todo.todo;
 
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +38,28 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<TodoResponse> create(@Valid @RequestBody TodoRequest request) {
+    @Operation(summary = "Create a new TODO")
+    public ResponseEntity<TodoResponse> create(
+            @Valid
+            @RequestBody
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Create TODO payload",
+                    required = true,
+                    content = @Content(
+                            examples = @ExampleObject(
+                                    name = "Create example",
+                                    value = """
+                                            {
+                                              "title": "Learn Spring Boot",
+                                              "description": "Implement TODO CRUD API",
+                                              "completed": false
+                                            }
+                                            """
+                            )
+                    )
+            )
+            CreateTodoRequest request
+    ) {
         TodoResponse response = todoService.create(request);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -45,7 +69,45 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public TodoResponse update(@PathVariable Long id, @Valid @RequestBody TodoRequest request) {
+    @Operation(summary = "Update one or more TODO fields")
+    public TodoResponse update(
+            @PathVariable Long id,
+            @Valid
+            @RequestBody
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Update TODO payload. Include only fields you want to change.",
+                    required = true,
+                    content = @Content(
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Update title only",
+                                            value = """
+                                                    {
+                                                      "title": "Updated title only"
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "Mark completed",
+                                            value = """
+                                                    {
+                                                      "completed": true
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "Update description only",
+                                            value = """
+                                                    {
+                                                      "description": "Updated details"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+            UpdateTodoRequest request
+    ) {
         return todoService.update(id, request);
     }
 
