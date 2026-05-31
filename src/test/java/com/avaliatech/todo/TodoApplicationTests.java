@@ -131,4 +131,18 @@ class TodoApplicationTests {
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.message").value("Validation failed"));
 	}
+
+	@Test
+	void shouldExposeOpenApiSpec() throws Exception {
+		mockMvc.perform(get("/v3/api-docs"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.openapi").exists())
+				.andExpect(jsonPath("$.info.title").value("Todo API"));
+	}
+
+	@Test
+	void shouldExposeSwaggerUi() throws Exception {
+		mockMvc.perform(get("/swagger-ui.html"))
+				.andExpect(status().is3xxRedirection());
+	}
 }
