@@ -2,55 +2,41 @@ package com.avaliatech.todo.todo;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import com.avaliatech.todo.todo.store.TodoStore;
 
 @Service
 public class TodoService {
 
-    private final TodoRepository todoRepository;
+    private final TodoStore todoStore;
 
-    public TodoService(TodoRepository todoRepository) {
-        this.todoRepository = todoRepository;
+    public TodoService(TodoStore todoStore) {
+        this.todoStore = todoStore;
     }
 
     public List<TodoResponse> findAll() {
-        return todoRepository.findAll().stream()
+        return todoStore.findAll().stream()
                 .map(TodoResponse::from)
                 .toList();
     }
 
-    public TodoResponse findById(Long id) {
+    public TodoResponse findById(String id) {
         return TodoResponse.from(getTodoOrThrow(id));
     }
 
     public TodoResponse create(CreateTodoRequest request) {
-        Todo todo = new Todo();
-        todo.setTitle(request.title());
-        todo.setDescription(request.description());
-        todo.setCompleted(Boolean.TRUE.equals(request.completed()));
-        return TodoResponse.from(todoRepository.save(todo));
+        return TodoResponse.from(todoStore.create(request));
     }
 
-    public TodoResponse update(Long id, UpdateTodoRequest request) {
-        Todo todo = getTodoOrThrow(id);
-        if (request.title() != null) {
-            todo.setTitle(request.title());
-        }
-        if (request.description() != null) {
-            todo.setDescription(request.description());
-        }
-        if (request.completed() != null) {
-            todo.setCompleted(request.completed());
-        }
-        return TodoResponse.from(todoRepository.save(todo));
+    public TodoResponse update(String id, UpdateTodoRequest request) {
+        return TodoResponse.from(todoStore.update(id, request));
     }
 
-    public void delete(Long id) {
-        Todo todo = getTodoOrThrow(id);
-        todoRepository.delete(todo);
+    public void delete(String id) {
+        todoStore.delete(id);
     }
 
-    private Todo getTodoOrThrow(Long id) {
-        return todoRepository.findById(id)
+    private TodoItem getTodoOrThrow(String id) {
+        return todoStore.findById(id)
                 .orElseThrow(() -> new TodoNotFoundException(id));
     }
 }

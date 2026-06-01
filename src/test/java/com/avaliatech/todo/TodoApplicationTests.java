@@ -56,7 +56,7 @@ class TodoApplicationTests {
 						.content(request))
 				.andExpect(status().isCreated())
 				.andExpect(header().exists("Location"))
-				.andExpect(jsonPath("$.id").isNumber())
+				.andExpect(jsonPath("$.id").isString())
 				.andExpect(jsonPath("$.title").value("Learn Spring Boot"))
 				.andExpect(jsonPath("$.completed").value(false));
 	}
@@ -95,7 +95,7 @@ class TodoApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id").value(saved.getId()))
+				.andExpect(jsonPath("$.id").value(String.valueOf(saved.getId())))
 				.andExpect(jsonPath("$.title").value("New title"))
 				.andExpect(jsonPath("$.description").value("New description"))
 				.andExpect(jsonPath("$.completed").value(true));
@@ -119,7 +119,7 @@ class TodoApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id").value(saved.getId()))
+				.andExpect(jsonPath("$.id").value(String.valueOf(saved.getId())))
 				.andExpect(jsonPath("$.title").value("Original title"))
 				.andExpect(jsonPath("$.description").value("Original description"))
 				.andExpect(jsonPath("$.completed").value(true));

@@ -33,7 +33,7 @@ public class TodoController {
     }
 
     @GetMapping("/{id}")
-    public TodoResponse getById(@PathVariable Long id) {
+    public TodoResponse getById(@PathVariable String id) {
         return todoService.findById(id);
     }
 
@@ -71,7 +71,7 @@ public class TodoController {
     @PutMapping("/{id}")
     @Operation(summary = "Update one or more TODO fields")
     public TodoResponse update(
-            @PathVariable Long id,
+            @PathVariable String id,
             @Valid
             @RequestBody
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -112,7 +112,7 @@ public class TodoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         todoService.delete(id);
         return ResponseEntity.noContent().build();
     }
