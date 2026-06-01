@@ -1,0 +1,25 @@
+services:
+  hbase:
+    image: aristanetworks/hbase:2.4.17
+    container_name: sbtodo-hbase
+    command: ["/hbase/bin/hbase", "master", "start"]
+    ports:
+      - "16000:16000" # HBase Master RPC
+      - "16010:16010" # HBase Master Web UI
+      - "16020:16020" # HBase RegionServer RPC
+      - "16030:16030" # HBase RegionServer Web UI
+      - "2181:2181"   # ZooKeeper Client
+      - "18080:8080"
+      - "18085:8085"
+    volumes:
+      # Mount configuration
+      - ./config/hbase-site.xml:/hbase/conf/hbase-site.xml
+      # Persistent Data Storage
+      - hbase_data:/data/hbase
+      - hbase_zookeeper:/data/zookeeper
+
+volumes:
+  hbase_data:
+    driver: local
+  hbase_zookeeper:
+    driver: local
