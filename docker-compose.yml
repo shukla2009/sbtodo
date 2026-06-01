@@ -1,4 +1,15 @@
 services:
+  postgres:
+    image: postgres:16
+    container_name: sbtodo-postgres
+    environment:
+      POSTGRES_DB: todos
+      POSTGRES_USER: todo
+      POSTGRES_PASSWORD: todo
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   hbase:
     image: aristanetworks/hbase:2.4.17
     container_name: sbtodo-hbase
@@ -52,4 +63,6 @@ volumes:
   hbase_zookeeper:
     driver: local
   couchbase_data:
+    driver: local
+  postgres_data:
     driver: local
