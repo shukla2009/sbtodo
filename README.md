@@ -17,15 +17,6 @@ Simple TODO API built with Spring Boot to compare multiple storage backends.
 - Java 21
 - Docker + Docker Compose
 
-## Default Credentials
-
-Use these defaults when logging into database portals/tools in this project:
-
-- Postgres: username `todo`, password `todo`, database `todos`
-- Couchbase portal: username `Administrator`, password `password`
-- H2 console (if used): username `sa`, password empty
-- HBase portal: no login configured in this setup
-- TigerGraph: no auth token configured by default (`tigergraph.auth-token` is empty)
 
 ## Summary
 
@@ -60,6 +51,7 @@ No Docker setup or initialization required.
 ```
 
 Portal (optional): `http://localhost:8080/h2-console`
+- H2 console (if used): username `sa`, password empty
 
 ### 2) Postgres
 
@@ -72,7 +64,7 @@ docker compose up -d postgres
 Initialization: none required.
 
 Portal: none configured in this project for Postgres.
-
+- Postgres: username `todo`, password `todo`, database `todos`
 Run app with profile:
 
 ```bash
@@ -96,7 +88,7 @@ docker compose exec hbase sh /scripts/hbase-init.sh
 Portal:
 
 - HBase Master UI: `http://localhost:16010`
-- HBase RegionServer UI: `http://localhost:16030`
+- HBase portal: no login configured in this setup
 
 Run app with profile:
 
@@ -119,7 +111,7 @@ docker compose exec couchbase sh /scripts/couchbase-init.sh
 ```
 
 Portal: `http://localhost:8091`
-
+- Couchbase portal: username `Administrator`, password `password`
 Run app with profile:
 
 ```bash
@@ -137,10 +129,13 @@ docker compose up -d tigergraph
 Initialize:
 
 ```bash
-docker compose exec tigergraph gsql -f /home/tigergraph/gsql/tg-todo.schema.gsql
+docker compose exec tigergraph bash
+gsql gsql/tg-todo.schema.gsql
+exit
 ```
 
 Portal/API endpoint: `http://localhost:14240`
+- TigerGraph: username `tigergraph`, password `tigergraph`
 
 Run app with profile:
 
