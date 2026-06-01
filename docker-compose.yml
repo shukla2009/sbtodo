@@ -17,9 +17,39 @@ services:
       # Persistent Data Storage
       - hbase_data:/data/hbase
       - hbase_zookeeper:/data/zookeeper
+  couchbase:
+    image: couchbase:community
+    container_name: sbtodo-couchbase
+    ports:
+      - "8091:8091"   # Web Console
+      - "8092:8092"   # Views
+      - "8093:8093"   # Query
+      - "8094:8094"   # Search
+      - "8095:8095"   # Analytics
+      - "8096:8096"   # Eventing
+      - "11210:11210" # Data
+    volumes:
+      - couchbase_data:/opt/couchbase/var
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/ui/index.html"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+  couchbase-init:
+    image: couchbase:community
+    container_name: sbtodo-couchbase-init
+    depends_on:
+      couchbase:
+        condition: service_healthy
+    restart: "no"
+    volumes:
+      - ./scripts/init-couchbase.sh:/scripts/init-couchbase.sh:ro
+    entrypoint: ["/bin/sh", "/scripts/init-couchbase.sh"]
 
 volumes:
   hbase_data:
     driver: local
   hbase_zookeeper:
+    driver: local
+  couchbase_data:
     driver: local
