@@ -39,7 +39,13 @@ docker compose down -v
 
 ### One-time init for some backends
 
-Couchbase and TigerGraph need extra initialization when first started.
+HBase, Couchbase, and TigerGraph need extra initialization when first started.
+
+Initialize HBase table:
+
+```bash
+docker compose exec hbase sh /scripts/hbase-init.sh
+```
 
 Initialize Couchbase bucket/scope/collection:
 
@@ -105,6 +111,12 @@ Start HBase service:
 
 ```bash
 docker compose up -d hbase
+```
+
+Initialize HBase table:
+
+```bash
+docker compose exec hbase sh /scripts/init-hbase.sh
 ```
 
 Run app:

@@ -58,7 +58,7 @@ public class HBaseTodoStore implements TodoStore {
             this.connection = ConnectionFactory.createConnection(config);
             this.tableName = TableName.valueOf(tableName);
             this.columnFamily = Bytes.toBytes(columnFamily);
-            ensureTable();
+            // ensureTable();
         } catch (IOException ex) {
             throw new IllegalStateException("Unable to initialize HBase connection", ex);
         }

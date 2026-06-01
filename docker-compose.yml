@@ -25,6 +25,7 @@ services:
     volumes:
       # Mount configuration
       - ./config/hbase-site.xml:/hbase/conf/hbase-site.xml
+      - ./config/hbase-init.sh:/scripts/hbase-init.sh
       # Persistent Data Storage
       - hbase_data:/data/hbase
       - hbase_zookeeper:/data/zookeeper
