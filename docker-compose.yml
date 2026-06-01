@@ -41,21 +41,26 @@ services:
       - "11210:11210" # Data
     volumes:
       - couchbase_data:/opt/couchbase/var
+      - ./config/couchbase-init.sh:/scripts/couchbase-init.sh:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8091/ui/index.html"]
       interval: 10s
       timeout: 5s
       retries: 20
-  couchbase-init:
-    image: couchbase:community
-    container_name: sbtodo-couchbase-init
-    depends_on:
-      couchbase:
-        condition: service_healthy
-    restart: "no"
+  tigergraph:
+    image: shukla2009/tg-dev:4.2.0
+    container_name: sbtodo-tigergraph
+    command: start all
+    ports:
+      - "14240:14240" # RESTPP + GSQL endpoint
     volumes:
-      - ./scripts/init-couchbase.sh:/scripts/init-couchbase.sh:ro
-    entrypoint: ["/bin/sh", "/scripts/init-couchbase.sh"]
+      - tigergraph_data:/home/tigergraph/mydata
+      - ./config/tg-todo.schema.gsql:/home/tigergraph/gsql/tg-todo.schema.gsql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:14240"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
 
 volumes:
   hbase_data:
@@ -65,4 +70,6 @@ volumes:
   couchbase_data:
     driver: local
   postgres_data:
+    driver: local
+  tigergraph_data:
     driver: local

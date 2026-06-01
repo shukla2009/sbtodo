@@ -1,0 +1,10 @@
+CREATE VERTEX Todo (
+  PRIMARY_ID id STRING,
+  title STRING,
+  description STRING,
+  completed BOOL,
+  createdAt STRING,
+  updatedAt STRING
+) WITH primary_id_as_attribute="true"
+
+CREATE GRAPH todos_graph(Todo)
