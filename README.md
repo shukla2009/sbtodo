@@ -17,6 +17,16 @@ Simple TODO API built with Spring Boot to compare multiple storage backends.
 - Java 21
 - Docker + Docker Compose
 
+## Default Credentials
+
+Use these defaults when logging into database portals/tools in this project:
+
+- Postgres: username `todo`, password `todo`, database `todos`
+- Couchbase portal: username `Administrator`, password `password`
+- H2 console (if used): username `sa`, password empty
+- HBase portal: no login configured in this setup
+- TigerGraph: no auth token configured by default (`tigergraph.auth-token` is empty)
+
 ## Summary
 
 This project helps you run the same TODO API against different storage backends and verify behavior consistently.
