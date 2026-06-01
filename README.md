@@ -10,13 +10,12 @@ Simple TODO API built with Spring Boot to compare multiple storage backends.
 - Java 21
 - Spring Boot
 - Maven
-- Storage profiles: `h2` (default), `postgres`, `hbase`, `couchbase`, `tigergraph`
+- Storage profiles: `h2` (default), `postgres`, `oracle`, `hbase`, `couchbase`, `tigergraph`
 
 ## Prerequisites
 
 - Java 21
 - Docker + Docker Compose
-
 
 ## Summary
 
@@ -32,7 +31,7 @@ Expected outcome:
 
 ## General Execution Steps
 
-1. Choose one backend profile (`h2`, `postgres`, `hbase`, `couchbase`, or `tigergraph`).
+1. Choose one backend profile (`h2`, `postgres`, `oracle`, `hbase`, `couchbase`, or `tigergraph`).
 2. Start that backend service in Docker (`docker compose up -d <service>`) if needed.
 3. Run backend initialization command if that profile requires it.
 4. Open the backend portal (if available) and verify service is ready.
@@ -51,6 +50,7 @@ No Docker setup or initialization required.
 ```
 
 Portal (optional): `http://localhost:8080/h2-console`
+
 - H2 console (if used): username `sa`, password empty
 
 ### 2) Postgres
@@ -64,14 +64,37 @@ docker compose up -d postgres
 Initialization: none required.
 
 Portal: none configured in this project for Postgres.
+
 - Postgres: username `todo`, password `todo`, database `todos`
+
 Run app with profile:
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
 ```
 
-### 3) HBase
+### 3) Oracle
+
+Start Docker service:
+
+```bash
+docker compose up -d oracle
+```
+
+Initialization: none required.
+
+Portal: Oracle EM Express `https://localhost:5500/em`
+
+- Oracle container user: `sys` (password from `ORACLE_PASSWORD`) or app user `todo` / `todo`
+- Service name for app connection: `FREEPDB1`
+
+Run app with profile:
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=oracle
+```
+
+### 4) HBase
 
 Start Docker service:
 
@@ -96,7 +119,7 @@ Run app with profile:
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=hbase
 ```
 
-### 4) Couchbase
+### 5) Couchbase
 
 Start Docker service:
 
@@ -111,14 +134,16 @@ docker compose exec couchbase sh /scripts/couchbase-init.sh
 ```
 
 Portal: `http://localhost:8091`
+
 - Couchbase portal: username `Administrator`, password `password`
+
 Run app with profile:
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=couchbase
 ```
 
-### 5) TigerGraph
+### 6) TigerGraph
 
 Start Docker service:
 
@@ -135,6 +160,7 @@ exit
 ```
 
 Portal/API endpoint: `http://localhost:14240`
+
 - TigerGraph: username `tigergraph`, password `tigergraph`
 
 Run app with profile:

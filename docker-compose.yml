@@ -10,6 +10,17 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  oracle:
+    image: gvenzl/oracle-free:23-slim
+    container_name: sbtodo-oracle
+    environment:
+      ORACLE_PASSWORD: oracle
+      APP_USER: todo
+      APP_USER_PASSWORD: todo
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle_data:/opt/oracle/oradata
   hbase:
     image: aristanetworks/hbase:2.4.17
     container_name: sbtodo-hbase
@@ -71,6 +82,8 @@ volumes:
   couchbase_data:
     driver: local
   postgres_data:
+    driver: local
+  oracle_data:
     driver: local
   tigergraph_data:
     driver: local
