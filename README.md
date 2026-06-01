@@ -17,89 +17,53 @@ Simple TODO API built with Spring Boot to compare multiple storage backends.
 - Java 21
 - Docker + Docker Compose
 
-## Run Infrastructure (Docker)
+## Summary
 
-Start all backing services:
+This project helps you run the same TODO API against different storage backends and verify behavior consistently.
 
-```bash
-docker compose up -d
-```
+Expected outcome:
 
-Stop all backing services:
+- Selected backend service is running in Docker.
+- Backend initialization (if required) has completed successfully.
+- Backend portal (if available) is reachable so you can confirm readiness/data.
+- Spring Boot app is running with the matching profile.
+- TODO APIs work in Swagger for create and read flows.
 
-```bash
-docker compose down
-```
+## General Execution Steps
 
-Reset all backing service data volumes:
-
-```bash
-docker compose down -v
-```
-
-### One-time init for some backends
-
-HBase, Couchbase, and TigerGraph need extra initialization when first started.
-
-Initialize HBase table:
-
-```bash
-docker compose exec hbase sh /scripts/hbase-init.sh
-```
-
-Initialize Couchbase bucket/scope/collection:
-
-```bash
-docker compose exec couchbase sh /scripts/couchbase-init.sh
-```
-
-Initialize TigerGraph schema:
-
-```bash
-docker compose exec tigergraph gsql -f /home/tigergraph/gsql/tg-todo.schema.gsql
-```
-
-## Run the App
-
-From the project root:
-
-```bash
-./mvnw spring-boot:run
-```
-
-By default, the app uses the `h2` profile.
-
-API base URL: `http://localhost:8080/api/v1/todos`
-
-Swagger UI: `http://localhost:8080/swagger-ui.html`
+1. Choose one backend profile (`h2`, `postgres`, `hbase`, `couchbase`, or `tigergraph`).
+2. Start that backend service in Docker (`docker compose up -d <service>`) if needed.
+3. Run backend initialization command if that profile requires it.
+4. Open the backend portal (if available) and verify service is ready.
+5. Start the app with the same Spring profile.
+6. Open Swagger and test create/read TODO endpoints.
+7. Recheck backend portal to confirm data is available in the selected database.
 
 ## Run by Profile
 
-Use this format:
-
-```bash
-./mvnw spring-boot:run -Dspring-boot.run.profiles=<profile>
-```
-
 ### 1) H2 (default)
 
-No extra setup required.
+No Docker setup or initialization required.
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Optional H2 console: `http://localhost:8080/h2-console`
+Portal (optional): `http://localhost:8080/h2-console`
 
 ### 2) Postgres
 
-Start Postgres service:
+Start Docker service:
 
 ```bash
 docker compose up -d postgres
 ```
 
-Run app:
+Initialization: none required.
+
+Portal: none configured in this project for Postgres.
+
+Run app with profile:
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
@@ -107,19 +71,24 @@ Run app:
 
 ### 3) HBase
 
-Start HBase service:
+Start Docker service:
 
 ```bash
 docker compose up -d hbase
 ```
 
-Initialize HBase table:
+Initialize:
 
 ```bash
-docker compose exec hbase sh /scripts/init-hbase.sh
+docker compose exec hbase sh /scripts/hbase-init.sh
 ```
 
-Run app:
+Portal:
+
+- HBase Master UI: `http://localhost:16010`
+- HBase RegionServer UI: `http://localhost:16030`
+
+Run app with profile:
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=hbase
@@ -127,19 +96,21 @@ Run app:
 
 ### 4) Couchbase
 
-Start Couchbase service:
+Start Docker service:
 
 ```bash
 docker compose up -d couchbase
 ```
 
-Initialize Couchbase:
+Initialize:
 
 ```bash
 docker compose exec couchbase sh /scripts/couchbase-init.sh
 ```
 
-Run app:
+Portal: `http://localhost:8091`
+
+Run app with profile:
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=couchbase
@@ -147,23 +118,37 @@ Run app:
 
 ### 5) TigerGraph
 
-Start TigerGraph service:
+Start Docker service:
 
 ```bash
 docker compose up -d tigergraph
 ```
 
-Initialize TigerGraph graph schema:
+Initialize:
 
 ```bash
-docker compose exec tigergraph gsql -f gsql/tg-todo.schema.gsql
+docker compose exec tigergraph gsql -f /home/tigergraph/gsql/tg-todo.schema.gsql
 ```
 
-Run app:
+Portal/API endpoint: `http://localhost:14240`
+
+Run app with profile:
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=tigergraph
 ```
+
+## Test with Swagger
+
+API base URL: `http://localhost:8080/api/v1/todos`
+
+Swagger UI: `http://localhost:8080/swagger-ui.html`
+
+1. Start one backend profile from sections above.
+2. Open Swagger UI.
+3. Create a TODO using `POST /api/v1/todos`.
+4. Verify data using `GET /api/v1/todos` and `GET /api/v1/todos/{id}`.
+5. If a portal is available for that backend, open it and verify the TODO exists.
 
 ## Build and Test
 
