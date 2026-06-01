@@ -83,8 +83,6 @@ docker compose up -d oracle
 
 Initialization: none required.
 
-Portal: Oracle EM Express `https://localhost:5500/em`
-
 - Oracle container user: `sys` (password from `ORACLE_PASSWORD`) or app user `todo` / `todo`
 - Service name for app connection: `FREEPDB1`
 
